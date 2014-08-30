@@ -291,9 +291,6 @@
     if ([self.frostedViewController.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.frostedViewController.delegate respondsToSelector:@selector(frostedViewController:didRecognizePanGesture:)])
         [self.frostedViewController.delegate frostedViewController:self.frostedViewController didRecognizePanGesture:recognizer];
     
-    if (!self.frostedViewController.panGestureEnabled)
-        return;
-    
     CGPoint point = [recognizer translationInView:self.view];
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
