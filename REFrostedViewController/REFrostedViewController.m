@@ -69,7 +69,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.wantsFullScreenLayout = YES;
 #pragma clang diagnostic pop
-    _panGestureEnabled = YES;
     _animationDuration = 0.35f;
     _backgroundFadeAmount = 0.3f;
     _blurTintColor = REUIKitIsFlatMode() ? nil : [UIColor colorWithWhite:1 alpha:0.75f];
@@ -138,13 +137,10 @@
 
 - (void)setMenuViewController:(UIViewController *)menuViewController
 {
-    if (_menuViewController) {
-        [_menuViewController.view removeFromSuperview];
-        [_menuViewController removeFromParentViewController];
+    if (!_menuViewController) {
+        _menuViewController = menuViewController;
+        return;
     }
-    
-    _menuViewController = menuViewController;
-
     CGRect frame = _menuViewController.view.frame;
     [_menuViewController willMoveToParentViewController:nil];
     [_menuViewController removeFromParentViewController];
@@ -197,7 +193,7 @@
         }
         self.containerViewController.screenshotImage = [[self.contentViewController.view re_screenshot] re_applyBlurWithRadius:self.blurRadius tintColor:self.blurTintColor saturationDeltaFactor:self.blurSaturationDeltaFactor maskImage:nil];
     }
-        
+    
     [self re_displayController:self.containerViewController frame:self.contentViewController.view.frame];
     self.visible = YES;
 }
@@ -232,15 +228,23 @@
 {
     if ([self.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.delegate respondsToSelector:@selector(frostedViewController:didRecognizePanGesture:)])
         [self.delegate frostedViewController:self didRecognizePanGesture:recognizer];
-    
-    if (!self.panGestureEnabled)
-        return;
-    
+
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self presentMenuViewControllerWithAnimatedApperance:NO];
     }
     
     [self.containerViewController panGestureRecognized:recognizer];
+}
+
+- (void)setPanGestureEnabled:(BOOL)panGestureEnabled
+{
+	self.panGestureRecognizer.enabled = panGestureEnabled;
+}
+
+
+- (BOOL)isPanGestureEnabled
+{
+	return self.panGestureRecognizer.enabled;
 }
 
 #pragma mark -

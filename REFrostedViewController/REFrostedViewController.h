@@ -43,7 +43,6 @@ typedef NS_ENUM(NSInteger, REFrostedViewControllerLiveBackgroundStyle) {
 @interface REFrostedViewController : UIViewController
 
 @property (strong, readonly, nonatomic) UIPanGestureRecognizer *panGestureRecognizer;
-@property (assign, readwrite, nonatomic) BOOL panGestureEnabled;
 @property (assign, readwrite, nonatomic) REFrostedViewControllerDirection direction;
 
 /**
@@ -74,6 +73,9 @@ typedef NS_ENUM(NSInteger, REFrostedViewControllerLiveBackgroundStyle) {
 - (void)resizeMenuViewControllerToSize:(CGSize)size;
 - (void)hideMenuViewControllerWithCompletionHandler:(void(^)(void))completionHandler;
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)recognizer;
+
+- (void)setPanGestureEnabled:(BOOL)panGestureEnabled;
+- (BOOL)isPanGestureEnabled;
 
 @end
 
