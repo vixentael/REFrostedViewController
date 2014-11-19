@@ -38,6 +38,7 @@
 @property (assign, readwrite, nonatomic) BOOL visible;
 @property (strong, readwrite, nonatomic) REFrostedContainerViewController *containerViewController;
 @property (strong, readwrite, nonatomic) UIPanGestureRecognizer *panGestureRecognizer;
+@property (assign, readwrite, nonatomic) BOOL panGestureEnabled;
 @property (assign, readwrite, nonatomic) BOOL automaticSize;
 @property (assign, readwrite, nonatomic) CGSize calculatedMenuViewSize;
 
@@ -69,6 +70,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.wantsFullScreenLayout = YES;
 #pragma clang diagnostic pop
+    _panGestureEnabled = YES;
     _animationDuration = 0.35f;
     _backgroundFadeAmount = 0.3f;
     _blurTintColor = REUIKitIsFlatMode() ? nil : [UIColor colorWithWhite:1 alpha:0.75f];
@@ -112,6 +114,8 @@
 #pragma mark -
 #pragma mark Setters
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
 - (void)setContentViewController:(UIViewController *)contentViewController
 {
     if (!_contentViewController) {
@@ -134,6 +138,7 @@
         [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
     }
 }
+#pragma clang diagnostic pop
 
 - (void)setMenuViewController:(UIViewController *)menuViewController
 {
@@ -141,6 +146,7 @@
         _menuViewController = menuViewController;
         return;
     }
+
     CGRect frame = _menuViewController.view.frame;
     [_menuViewController willMoveToParentViewController:nil];
     [_menuViewController removeFromParentViewController];
@@ -171,8 +177,9 @@
 
 - (void)presentMenuViewControllerWithAnimatedApperance:(BOOL)animateApperance
 {
-    if ([self.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.delegate respondsToSelector:@selector(frostedViewController:willShowMenuViewController:)]) {
-        [self.delegate frostedViewController:self willShowMenuViewController:self.menuViewController];
+    id<REFrostedViewControllerDelegate> strongDelegate = self.delegate;
+    if ([strongDelegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [strongDelegate respondsToSelector:@selector(frostedViewController:willShowMenuViewController:)]) {
+        [strongDelegate frostedViewController:self willShowMenuViewController:self.menuViewController];
     }
     
     self.containerViewController.animateApperance = animateApperance;
@@ -226,9 +233,13 @@
 
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)recognizer
 {
-    if ([self.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.delegate respondsToSelector:@selector(frostedViewController:didRecognizePanGesture:)])
-        [self.delegate frostedViewController:self didRecognizePanGesture:recognizer];
-
+    id<REFrostedViewControllerDelegate> strongDelegate = self.delegate;
+    if ([strongDelegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [strongDelegate respondsToSelector:@selector(frostedViewController:didRecognizePanGesture:)])
+        [strongDelegate frostedViewController:self didRecognizePanGesture:recognizer];
+    
+    if (!self.panGestureEnabled)
+        return;
+    
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self presentMenuViewControllerWithAnimatedApperance:NO];
     }
@@ -258,8 +269,9 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    if ([self.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.delegate respondsToSelector:@selector(frostedViewController:willAnimateRotationToInterfaceOrientation:duration:)])
-        [self.delegate frostedViewController:self willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    id<REFrostedViewControllerDelegate> strongDelegate = self.delegate;
+    if ([strongDelegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [strongDelegate respondsToSelector:@selector(frostedViewController:willAnimateRotationToInterfaceOrientation:duration:)])
+        [strongDelegate frostedViewController:self willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
     if (self.visible) {
         if (self.automaticSize) {
