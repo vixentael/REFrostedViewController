@@ -81,6 +81,7 @@
     _liveBlur = REUIKitIsFlatMode();
     _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:_containerViewController action:@selector(panGestureRecognized:)];
     _automaticSize = YES;
+    _marginTop = 0;
 }
 
 - (id)initWithContentViewController:(UIViewController *)contentViewController menuViewController:(UIViewController *)menuViewController
@@ -154,6 +155,7 @@
     
     [self.containerViewController addChildViewController:menuViewController];
     menuViewController.view.frame = frame;
+
     [self.containerViewController.containerView addSubview:menuViewController.view];
     [menuViewController didMoveToParentViewController:self];
 }
