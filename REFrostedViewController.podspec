@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name        = 'REFrostedViewController'
-  s.version     = '2.4.7'
-  s.authors     = { 'Roman Efimov' => 'romefimov@gmail.com' }
+  s.version     = '2.4.8'
+  s.authors     = { 'Roman Efimov' => 'romefimov@gmail.com', 'Vixentael' => 'vixentael@gmail.com' }
   s.homepage    = 'https://github.com/romaonthego/REFrostedViewController'
-  s.summary     = 'iOS 7 style blurred view controller that appears on top of your view controller.'
-  s.source      = { :git => 'https://github.com/romaonthego/REFrostedViewController.git',
+  s.summary     = 'iOS 7 style blurred view controller that appears on top of your view controller. Updated with forks from other repos.'
+  s.source      = { :git => 'https://github.com/vixentael/REFrostedViewController.git',
                     :tag => s.version.to_s }
   s.license     = { :type => "MIT", :file => "LICENSE" }
 
